@@ -1,0 +1,39 @@
+# Contributor: Zach DeCook <zachdecook@librem.one>
+maintainer="Zach DeCook <zachdecook@librem.one>"
+pkgname=hyprutils
+pkgver=0.14.2
+pkgrel=0
+pkgdesc="Hyprland utilities library used across the ecosystem"
+url="https://github.com/hyprwm/hyprutils"
+arch="all"
+license="BSD-3-Clause"
+source="
+	$pkgname-$pkgver.tar.gz::https://github.com/hyprwm/hyprutils/archive/refs/tags/v$pkgver.tar.gz
+	"
+makedepends="cmake samurai pixman-dev gtest-dev"
+subpackages="$pkgname-doc $pkgname-dev"
+options="!check" # Building with tests causes superfluous stderr output everywhere
+
+build() {
+	cmake -B build -G Ninja \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DCMAKE_BUILD_TYPE=None # Need to build Debug type to get tests
+	cmake --build build
+}
+
+check() {
+	cd build
+	ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --install build
+	install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}
+
+
+
+sha512sums="
+eb7f04a92b861377df93321831cf19251a00e36941fcf3effd7c1ac6f4aebbb363bd3bfc22944c755b4aa99f9a4134e950911db251fbdf7bc917b3d2391e8f2f  hyprutils-0.14.2.tar.gz
+"

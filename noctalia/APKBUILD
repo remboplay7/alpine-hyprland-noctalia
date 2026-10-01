@@ -1,0 +1,89 @@
+# Maintainer: Name Surname <example@gmail.com>
+pkgname=noctalia
+pkgver=5.2.0
+pkgrel=0
+pkgdesc="A sleek, customizable desktop shell crafted for Wayland"
+url="https://github.com/noctalia-dev/noctalia"
+arch="x86_64 aarch64"
+license="MIT"
+makedepends="
+	cairo-dev
+	curl-dev
+	fontconfig-dev
+	freetype-dev
+	g++
+	glib-dev
+	harfbuzz-dev
+	libqalculate-dev
+	librsvg-dev
+	libwebp-dev
+	libxkbcommon-dev
+	libxml2-dev
+	linux-pam-dev
+	mesa-dev
+	meson
+	ninja
+	pango-dev
+	pipewire-dev
+	pkgconf
+	polkit-dev
+	sdbus-cpp-dev
+	wayland-dev
+	wayland-protocols
+	libsecret-dev
+	libsodium-dev
+	wireplumber-dev
+	md4c-dev
+	nlohmann-json
+	tomlplusplus-dev
+	libical-dev
+	libjxl-dev
+	libsndfile-dev
+	"
+# Опционально для виджетов в рантайме: upower, pipewire, brightnessctl/ddcutil
+depends="font-jetbrains-mono
+				 font-jetbrains-mono-nerd
+				 font-noto
+				 pipewire
+				 pipewire-pulse
+				 wireplumber
+				 upower
+				 networkmanager
+				 bluez
+				 dbus
+				 playerctl
+				 hicolor-icon-theme"
+#subpackages="$pkgname-doc"
+
+#_stb_commit="5736b15f7ea0ff732947211128b389d01b51e4bf"
+
+source="$pkgname-$pkgver.tar.gz::https://github.com/noctalia-dev/noctalia/archive/refs/tags/v$pkgver.tar.gz
+				stb-master.tar.gz::https://github.com/nothings/stb/archive/refs/heads/master.tar.gz"
+
+prepare() {
+	default_prepare
+
+	mkdir -p "$builddir"/include/stb
+	cp "$srcdir"/stb-master/*.h "$builddir"/include/stb/
+}
+
+build() {
+	abuild-meson \
+		-Dc_args="-I$builddir/include" \
+		-Dcpp_args="-I$builddir/include" \
+		-Dtests=disabled \
+		. output
+	meson compile -C output
+}
+check() {
+	# Тесты в релизных тарболах часто требуют рабочий Wayland-сокет
+	meson test -C output --no-rebuild --print-errorlogs || true
+}
+
+package() {
+	DESTDIR="$pkgdir" meson install --no-rebuild -C output
+}
+sha512sums="
+4305db7263175e33fd62f30e33883d355b8d006286abba6ef6da128bdc6fb45e837cdacb88c8bde40b089aefde63d7b2770d40983fdcc8c5fd530b22dfd8a043  noctalia-5.2.0.tar.gz
+f26ecc04dda9121ffdec9f73d7a5838478c6a1ea91af77441493a1b0e671c7f23234fc1316714e6c9a1867d1ad204d65fb5efa1cab66f9e4ffa4fed7d12dfda3  stb-master.tar.gz
+"

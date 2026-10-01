@@ -1,0 +1,118 @@
+# Contributor: Zach DeCook <zachdecook@librem.one>
+maintainer="Zach DeCook <zachdecook@librem.one>"
+pkgname=hyprland
+pkgver=0.56.2
+pkgrel=0
+# IMPORTANT: _commit needs to be updated so that hyprctl functions correctly. It must be 40 characters long.
+_commit="521ece463c4a9d3d128670688a34756805a4328f"
+pkgdesc="Independent, highly customizable, dynamic tiling Wayland compositor that doesn't sacrifice on its looks."
+url="https://hypr.land"
+arch="all"
+license="BSD-3-Clause"
+source="
+	https://github.com/hyprwm/Hyprland/archive/v$pkgver/Hyprland-v$pkgver.tar.gz
+	"
+builddir="$srcdir/Hyprland-$pkgver"
+makedepends="
+	lld
+	aquamarine-dev
+	cairo-dev
+	cmake
+	elogind-dev
+	glaze
+	hyprcursor-dev
+	hyprgraphics-dev
+	hyprland-protocols
+	hyprlang-dev
+	hyprutils-dev>=0.14.0
+	hyprwayland-scanner
+	hyprwire-dev
+	jq
+	libdrm-dev
+	libinput-dev
+	libliftoff-dev
+	libxcb-dev
+	libxcursor-dev
+	libxkbcommon-dev
+	mesa-dev
+	muparser-dev
+	pango-dev
+	pixman-dev
+	re2-dev
+	samurai
+	tomlplusplus-dev
+	udis86-git-dev
+	vulkan-loader-dev
+	wayland-dev
+	wayland-protocols
+	xcb-util-errors-dev
+	xcb-util-image-dev
+	xcb-util-renderutil-dev
+	xcb-util-wm-dev
+	xkeyboard-config-dev
+	xwayland-dev
+	glslang-dev
+	spirv-tools-dev
+	lcms2-dev
+	libei-dev
+	readline-dev
+	lua5.5-dev
+	"
+subpackages="
+	$pkgname-doc
+	$pkgname-dev
+	$pkgname-wallpapers::noarch
+	$pkgname-bash-completion
+	$pkgname-fish-completion
+	$pkgname-zsh-completion
+	"
+options="!check" # Tests require building in debug mode
+
+prepare() {
+	default_prepare
+
+	# Set some variables in version.h.in
+	sed -i "s/@GIT_COMMIT_HASH@/$_commit/" "$builddir"/src/version.h.in
+	sed -i "s/@GIT_BRANCH@/build-alpine/" "$builddir"/src/version.h.in
+	_patches="$(printf %s "$source" | grep '\.patch$' || true)"
+	if test "$_patches"; then
+		_message="with patches: $_patches"
+	else
+		_message="without patches"
+	fi
+	sed -i "s~@GIT_COMMIT_MESSAGE@~$_message~" "$builddir"/src/version.h.in
+	sed -i "s/@GIT_TAG@/v$pkgver/" "$builddir"/src/version.h.in
+	sed -i "s/@GIT_DIRTY@/clean/" "$builddir"/src/version.h.in
+
+	# Заменяем кривой ranges-пайплайн на обычную строку с starts_with
+	sed -i '/auto str_view = str | std::views::transform/,/}("true"sv, "yes"sv, "on"sv);/c\    std::string low; for (char c : str) low += std::tolower(c);\n    return low.starts_with("true") || low.starts_with("yes") || low.starts_with("on");' "$builddir"/src/helpers/MiscFunctions.cpp
+}
+
+
+build() {
+	# Like `make release` but without hyprpm
+	export CC=gcc
+	export CXX=g++
+	export LDFLAGS="$LDFLAGS -fuse-ld=lld"
+	cmake --no-warn-unused-cli -DNO_HYPRPM=true -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:STRING=/usr -S . -B ./build -G Ninja
+	ninja -C build
+}
+
+check() {
+	make test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build install
+}
+
+wallpapers() {
+	pkgdesc="Wallpapers for Hyprland"
+
+	amove usr/share/hypr/wall*.png
+}
+
+
+sha512sums="
+517d7de91521d5e330b3472f613797c6afa63f2c6fb3339b73b43d53f6bda8d84ae457881a3e792331dc959ace8f17c9907dd75fce361ab9fb429369abb04655  Hyprland-v0.56.2.tar.gz
+"

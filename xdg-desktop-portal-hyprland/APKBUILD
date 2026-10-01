@@ -1,0 +1,54 @@
+# Contributor: Rabindra Dhakal <contact@qaidvoid.dev>
+maintainer="Zach DeCook <zachdecook@librem.one>"
+pkgname=xdg-desktop-portal-hyprland
+pkgver=1.4.1
+pkgrel=0
+pkgdesc="xdg-desktop-portal backend for hyprland"
+url="https://github.com/hyprwm/xdg-desktop-portal-hyprland"
+arch="all"
+license="BSD-3-Clause"
+options="!check" # No tests
+depends="
+	hyprlang
+	xdg-desktop-portal
+	"
+makedepends="
+	basu-dev
+	cmake
+	hyprland-protocols
+	hyprlang-dev
+	hyprutils-dev
+	hyprwayland-scanner
+	pipewire-dev
+	qt6-qtwayland-dev
+	samurai
+	sdbus-cpp-dev
+	wayland-dev
+	wayland-protocols
+	"
+subpackages="$pkgname-doc"
+source="
+	$pkgname-$pkgver.tar.gz::https://github.com/hyprwm/xdg-desktop-portal-hyprland/archive/v$pkgver.tar.gz
+	use-system-installed-sdbus-c++.patch
+	"
+
+build() {
+	cmake -B build -G Ninja \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_LIBEXECDIR=/usr/libexec \
+		-DCMAKE_INSTALL_PREFIX=/usr
+	cmake --build build
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --install build
+
+	rm -rf "$pkgdir"/usr/lib/systemd
+	install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}
+
+
+sha512sums="
+c904a6b9b35e8e470274a295a2ba342d27de36feb6763d5816c1c6aaf6f336d011a9010bb804b799946c7f0fc3c7e1a30e5957eb5b868e841d35cdb46f7cd2ba  xdg-desktop-portal-hyprland-1.4.1.tar.gz
+4b9c2fce7d801550a74a7c916f0119495174535136b4bebaeb02c63af5659da0b7b0b1a883890dd280f8e1e12b082ac116bf259d0fde3688c506c482cfe46d9d  use-system-installed-sdbus-c++.patch
+"
