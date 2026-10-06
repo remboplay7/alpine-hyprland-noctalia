@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 #обязательно поменяйте путь на вашу директорию с проектом
-REPO_DIR="$HOME/aports-local"
+REPO_DIR="$HOME/alpine-hyprland-noctalia"
 
 PACKAGES="
 hyprutils

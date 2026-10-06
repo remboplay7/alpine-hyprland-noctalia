@@ -1,6 +1,6 @@
 # Maintainer: Name Surname <example@gmail.com>
 pkgname=noctalia
-pkgver=5.2.0
+pkgver=5.2.1
 pkgrel=0
 pkgdesc="A sleek, customizable desktop shell crafted for Wayland"
 url="https://github.com/noctalia-dev/noctalia"
@@ -84,6 +84,6 @@ package() {
 	DESTDIR="$pkgdir" meson install --no-rebuild -C output
 }
 sha512sums="
-4305db7263175e33fd62f30e33883d355b8d006286abba6ef6da128bdc6fb45e837cdacb88c8bde40b089aefde63d7b2770d40983fdcc8c5fd530b22dfd8a043  noctalia-5.2.0.tar.gz
+d4574d8392e42ac7060285acae7cbf06fd2dd3d7eddccee02e6a68d67fd401cf1a50641ef414129db061d1696dc63117cd7d6288236a7b2f1ac75704e9b4e158  noctalia-5.2.1.tar.gz
 f26ecc04dda9121ffdec9f73d7a5838478c6a1ea91af77441493a1b0e671c7f23234fc1316714e6c9a1867d1ad204d65fb5efa1cab66f9e4ffa4fed7d12dfda3  stb-master.tar.gz
 "
