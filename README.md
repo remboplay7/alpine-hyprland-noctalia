@@ -10,9 +10,9 @@
 
 `--allow-untrusted` нужно писать ибо мне лень все эти ключи туда сюда, по тем же причинам его нужно писать и при каждой установке пакетов из этого репо тоже.
 
-Проверяем пакеты `apk policy <интересующий_пакет>`, вы должны увидеть строчки вроде:
+Проверяем пакеты `apk policy --allow-untrusted <интересующий_пакет>`, вы должны увидеть строчки вроде:
 ```
-apk policy hyprland                                                                                                                                                                                                     
+apk policy --allow-untrusted hyprland                                                                                                                                                                                                     
 WARNING: opening from cache https://raw.githubusercontent.com/remboplay7/alpine-hyprland-noctalia/main/x86_64/APKINDEX.tar.gz: UNTRUSTED signature
 hyprland policy:
   0.54.3-r0:
@@ -28,7 +28,7 @@ hyprland policy:
 Дальнейший запуск и пользование не отличаются от любых других дистрибутивов с OpenRC.
 ## Для ноулайферов
 Подготавливаем окружение.
-`doas apk add alpine-sdk`
+`doas apk add alpine-sdk abuild apk-tools`
 `doas adduser $USER abuild`
 Что бы применить изменения в этой сессии (или просто перезагрузите пк):
 `newgrp abuild`
