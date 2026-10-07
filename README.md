@@ -28,28 +28,40 @@ hyprland policy:
 Дальнейший запуск и пользование не отличаются от любых других дистрибутивов с OpenRC.
 ## Для ноулайферов
 Подготавливаем окружение.
+
 `doas apk add alpine-sdk abuild apk-tools`
+
 `doas adduser $USER abuild`
+
 Что бы применить изменения в этой сессии (или просто перезагрузите пк):
+
 `newgrp abuild`
+
 abuild нужна пара RSA ключей, генерируем:
+
 `abuild-keygen -a -i`
 
 Там еще компиляторы нужны, линкеры, ninja, meson, make и прочая шняга, но я думаю разберётесь.
 ### Непосредственно сборка
 Стоит соблюдать последовательность сборки ибо в hyprland всё от всего зависит, если вас интересует сборка всего вручную то порядок сборки таков:
+
 `hyprutils -> hyprgraphics -> hyprlang -> hyprwire -> hyprcursor -> aquamarine -> hyprland -> xdg-desktop-portal-hyprland`
 
 Но я навайбкодил скрипт buildhypr.sh (который даже не проверял) и в теории он должен автоматически пробежатся по всем директориям, прогнать в нужном порядке `abuild` и после каждого `abuild` сделать `doas apk update --allow-untrusted`, так же учтите что noctalia в скрипт не входит (она во первых жирная во вторых можно и ручками один раз написать то что описано ниже).
 
 Переходим в директорию где лежит файл APKBUILD.
-Пишем `abuild checksum` что бы подсчитать хеши, так надо.
+
+Пишем `abuild checksum`
+
 Потом `abuild -r -c`
+
 Ну или `abuild checksum && abuild -r -c`
-После успешной сборки обязательно `doas apk update --allow-untrusted` (--allow-untrusted на всякий случай).
+
+После успешной сборки обязательно `doas apk update --allow-untrusted`
 
 
 Если всё собралось как надо, готовые пакеты вы можете найти примерно по такому пути (директория  `community` у вас может отличатся по названию):
+
 `~/.local/share/abuild/community/x86_64`
 
 Подключаем локальный репозиторий подобно подключению удалённых репо, первой строкой в `/etc/apk/repositories` пишем `~/.local/share/abuild/community`
