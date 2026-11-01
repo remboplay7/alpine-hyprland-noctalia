@@ -1,6 +1,6 @@
 ﻿# alpine-hyprland-noctalia
 ## Зачем это всё надо
-Думаю ни для кого не секрет что [hyprland в репозиториях alpine](https://pkgs.alpinelinux.org/package/edge/community/x86_64/hyprland) порядком устарел, пользоватся старьём не охота, поэтому в этом репо лежат как готовые [.apk пакеты](https://github.com/remboplay7/alpine-hyprland-noctalia/tree/main/x86_64) для hyprland и noctalia, так и APKBUILD файлы которые вы можете сами сбилдить.
+Думаю ни для кого не секрет что [hyprland в репозиториях alpine](https://pkgs.alpinelinux.org/package/edge/community/x86_64/hyprland) порядком устарел, пользоваться старьём не охота, поэтому в этом репо лежат как готовые [.apk пакеты](https://github.com/remboplay7/alpine-hyprland-noctalia/tree/main/x86_64) для hyprland и noctalia, так и APKBUILD файлы которые вы можете сами сбилдить.
 ## Для казуалов
 Подключаем репозиторий дабы просто установить то что получилось сбилдить у меня.
 
@@ -60,7 +60,7 @@ abuild нужна пара RSA ключей, генерируем:
 После успешной сборки обязательно `doas apk update --allow-untrusted`
 
 
-Если всё собралось как надо, готовые пакеты вы можете найти примерно по такому пути (директория  `community` у вас может отличатся по названию):
+Если всё собралось как надо, готовые пакеты вы можете найти примерно по такому пути (часть директории  `abuild/community` у вас может отличатся):
 
 `~/.local/share/abuild/community/x86_64`
 
